@@ -4,6 +4,7 @@
 
 from RunSpec import RunSpec
 from EclipseGrid import EclipseGrid
+from Region import Region
 
 
 class MainReader():
@@ -11,7 +12,7 @@ class MainReader():
 
         self.run_spec = RunSpec()
         self.grid = EclipseGrid()
-        # self.regions = Region()
+        self.regions = Region()
         self.read_f = f
         
     def file_read(self):
