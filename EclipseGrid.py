@@ -14,8 +14,8 @@ class EclipseGrid(SectionReader):
             if line.startswith('EQUALS'):
                 self._equals_handle(f)
             elif line.startswith('INCLUDE'):
-                self.include_file = next(f).strip('\n')
-                self._include_handle(f)
+                self.include_file = next(f).strip()
+                self._include_handle()
 
     def _equals_handle(self, f):
         for line in f:
@@ -25,8 +25,10 @@ class EclipseGrid(SectionReader):
                 line = line.split()
                 self.equals[line[0]] = float(line[1])
 
-    def _include_handle(self, f):
-        return
+    def _include_handle(self):
+        grid_data = open(self.include_file)
+        line = grid_data.readline().strip()
+        print(line)
 
 if __name__ == '__main__':
     from sys import argv
