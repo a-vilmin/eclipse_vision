@@ -14,7 +14,7 @@ class EclipseGrid(SectionReader):
             self.y = y
             self.z = z
             self.val = val
-        
+
     def handle(self, f):
         for line in f:
             if super(EclipseGrid, self)._section_done(line):
@@ -44,15 +44,25 @@ class EclipseGrid(SectionReader):
             if not line or line[0] == '/':
                 continue
             elif line[0] == 'COPY':
-                return
+                self._copy(grid_data)
             else:
                 direction, val, x = line[:3]
                 y, z = (line[4], line[6])
                 cell = EclipseGrid.PermCell(x, y, z, val)
                 self.perms[direction] += [cell]
-                
+
+    def _copy(self, f):
+        for line in f:
+            line = line.strip().split()
+
+            if not line or line[0] == '/':
+                return
+            else:
+                self.perms[line[1]] = self.perms[line[0]]
+    
 if __name__ == '__main__':
     from sys import argv
+
     f = open(argv[1])
     f.readline()  # read thru first lines
 
@@ -64,3 +74,7 @@ if __name__ == '__main__':
 
     for key, value in test.equals.iteritems():
         print(key + " " + str(value))
+
+    for key, value in test.perms.iteritems():
+        leng = len(value)
+        print(key + " " + str(leng) + str(value[leng-3045]))
