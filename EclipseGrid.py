@@ -39,18 +39,18 @@ class EclipseGrid(SectionReader):
         grid_data.readline()
 
         for line in grid_data:
-            if line.startswith('/'):
+            line = line.strip().replace("'", "").split()
+
+            if not line or line[0] == '/':
                 continue
-            elif line.startswith('COPY'):
+            elif line[0] == 'COPY':
                 return
-            try:
-                line = line.strip().replace("'", "").split()
+            else:
                 direction, val, x = line[:3]
                 y, z = (line[4], line[6])
                 cell = EclipseGrid.PermCell(x, y, z, val)
                 self.perms[direction] += [cell]
-            except ValueError:
-                pass
+                
 if __name__ == '__main__':
     from sys import argv
     f = open(argv[1])

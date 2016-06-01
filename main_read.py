@@ -20,6 +20,7 @@ class MainReader():
                 self.run_spec.handle(self.read_f)
             elif line.startswith('GRID'):
                 self.grid.handle(self.read_f)
+
 if __name__ == '__main__':
     from sys import argv
     f = open(argv[1])
