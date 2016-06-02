@@ -1,3 +1,8 @@
+# Adam Vilmin
+# Illinois State Geological Survey, University of Illinois
+# 2015-05-31
+
+
 from SectionReader import SectionReader
 from collections import defaultdict
 
