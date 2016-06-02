@@ -13,8 +13,11 @@ class MainReader():
         self.run_spec = RunSpec()
         self.grid = EclipseGrid()
         self.regions = Region()
-        self.read_f = f
-        
+        try:
+            self.read_f = f
+        except NameError:
+            print("Cannot open file")
+
     def file_read(self):
         for line in self.read_f:
             if line.startswith('RUNSPEC'):

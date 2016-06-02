@@ -40,8 +40,12 @@ class EclipseGrid(SectionReader):
                 self.equals[line[0]] = float(line[1])
 
     def _include_handler(self):
-        grid_data = open(self.include_file)
-        grid_data.readline()
+        try:
+            grid_data = open(self.include_file)
+            grid_data.readline()  # First line is garbage
+        except NameError:
+            print("File cannot be opened.")
+            return
 
         for line in grid_data:
             line = line.strip().replace("'", "").split()
