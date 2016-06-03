@@ -10,13 +10,15 @@ from Region import Region
 class MainReader():
     def __init__(self, f):
 
-        self.run_spec = RunSpec()
-        self.grid = EclipseGrid()
-        self.regions = Region()
         try:
             self.read_f = f
         except NameError:
             print("Cannot open file")
+            return
+
+        self.run_spec = RunSpec()
+        self.grid = EclipseGrid()
+        self.regions = Region()
 
     def file_read(self):
         for line in self.read_f:
