@@ -8,10 +8,10 @@ def find_runs(rf, wf):
                 for each in break_up[1:]:
                     try:
                         float(each)
-                        wf.write('\n')
                         break
                     except ValueError:
                         wf.write(each + " ")
+                wf.write('\n')
             except:
                 print(previous_line)
         previous_line = line
