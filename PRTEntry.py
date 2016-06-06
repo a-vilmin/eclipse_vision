@@ -30,6 +30,21 @@ class PRTEntry():
                   "format not recognized!")
 
     def read_cell_info(self, f):
-
+        curr_i = []
         for line in f:
-            
+            if line.startswith(" (I,  J,  K)"):
+                curr_i = self._reset_i(line)
+            elif line.startswith("-------"):
+                return
+            else:
+                self._read_points(curr_i, line)
+
+    def _reset_i(self, line):
+
+        chopped = line.strip().split()
+        ret_val = []
+
+        for each in chopped[4:]:
+            ret_val += [int(each)]
+
+        return ret_val
