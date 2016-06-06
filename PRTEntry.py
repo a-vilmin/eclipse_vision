@@ -2,10 +2,10 @@ class PRTEntry():
 
     # nested class to store cell data
     class Cell():
-        def __init__(self):
-            self.y = 0
-            self.x = 0
-            self.z = 0
+        def __init__(self, x, y, z):
+            self.y = y
+            self.x = x
+            self.z = z
             self.n = 0.0
 
     # class methods
@@ -29,15 +29,27 @@ class PRTEntry():
             print("Incorrect format passed to PRTEntry object. Grid data" +
                   "format not recognized!")
 
-    def read_cell_info(self, f):
-        curr_i = []
+    def read_cell_info(self, f, test_list=[]):  # testing; default list empty
+        curr_x = test_list
         for line in f:
             if line.startswith(" (I,  J,  K)"):
-                curr_i = self._reset_i(line)
+                curr_x = self._reset_i(line)
             elif line.startswith("-------"):
                 return
+            elif line.strip() == "":
+                continue
             else:
-                self._read_points(curr_i, line)
+                self._read_points(curr_x, line)
+
+    def _read_points(self, curr_x, line):
+        chopped = line.split(")")
+        y, z = chopped[0].split(",")[1:]
+        n_values = chopped[1].split()
+
+        for i in curr_x:
+            temp = PRTEntry.Cell(i, y, z)
+            temp.n = float(n_values.pop(0))
+            self.cells += [temp]
 
     def _reset_i(self, line):
 
@@ -48,3 +60,27 @@ class PRTEntry():
             ret_val += [int(each)]
 
         return ret_val
+
+
+if __name__ == '__main__':
+    from sys import argv
+
+    # use argv[1] for the parsed file to read_type_info
+    types = open(argv[1])
+    prt = open(argv[2])
+
+    test = PRTEntry()
+    test.read_type_info(types.readline())
+
+    for line in prt:
+        if line.startswith(" (I,  J,  K)"):
+            test_list = test._reset_i(line)
+            test.read_cell_info(prt, test_list)
+            break
+
+    print("Type name is: " + test.name)
+    print("Type time is: " + str(test.time))
+    print("Number of Cells: " + str(len(test.cells)))
+
+    types.close()
+    prt.close()
