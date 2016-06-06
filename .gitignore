@@ -65,3 +65,4 @@ target/
 *.dat*
 *.txt
 *.PRT
+*flymake*
