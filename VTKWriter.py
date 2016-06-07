@@ -9,4 +9,9 @@ class VTKWriter(PRTController):
         self.grid = vtkImageData()
 
     def set_grid_spec(self, eclipse):
-        """expect eclipse.data file reader object. refer to readme for specs"""
+        """expect eclipse file reader object. refer to readme for specs"""
+        x_dim, y_dim, z_dim = eclipse.dims()
+        self.grid.SetDimensions(x_dim, y_dim, z_dim)
+
+        dx, dy, dz = eclipse.spacing()
+        self.grid.SetSpacing(dx, dy, dz)

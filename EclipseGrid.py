@@ -36,7 +36,7 @@ class EclipseGrid(SectionReader):
             if line.startswith("/"):
                 return
             else:
-                line = line.split()
+                line = line.strip().split()
                 self.equals[line[0]] = float(line[1])
 
     def _include_handler(self):
