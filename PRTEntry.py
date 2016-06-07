@@ -15,7 +15,6 @@ class PRTEntry():
         self.name = ''
 
     def read_type_info(self, line):
-
         break_up = line.strip().split()
         try:
             for each in break_up[1:]:

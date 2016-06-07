@@ -21,6 +21,8 @@ class PRTController():
                 temp.read_cell_info(opened)
 
                 self.runs[term] += [temp]
+                break
+        opened.close()
 
     def _skip_lines(self, f, term):
         for line in f:
