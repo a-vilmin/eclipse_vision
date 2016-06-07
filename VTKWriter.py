@@ -1,11 +1,11 @@
 from PRTController import PRTController
-from vtk import vtkImageData
+from vtk import vtkImageData, vtkFloatArray, vtkXMLImageDataWriter
 
 
-class VTKWriter(PRTController):
+class VTKWriter():
 
     def __init__(self, prt):
-        super(VTKWriter, self).__init__(prt)
+        self.prt = PRTController(prt)
         self.grid = vtkImageData()
 
     def set_grid_spec(self, eclipse):
@@ -18,10 +18,28 @@ class VTKWriter(PRTController):
         x_dim, y_dim, z_dim = eclipse.dims()
         self.grid.SetDimensions(int(x_dim)+1, int(y_dim)+1, int(z_dim)+1)
 
-    def create_runs(self, terms):
-        for term in terms:
-            super(VTKWriter, self).add_runs(term)
-    
+    def add_run(self, term="pH"):
+        # use pop and work backwards
+        self.prt.add_runs(term)
+        runs = self.prt.runs[term]
+
+        # run is PRTEntry object
+        for run in runs:
+            array = vtkFloatArray()
+            array.SetName(run.name+" at "+str(run.time)+" days.")
+            array.SetNumberOfComponents(1)
+
+            while len(run.cells):
+                scalar = run.cells.pop().n
+                array.InsertNextTuple1(scalar)
+            self.grid.GetCellData().AddArray(array)
+
+    def write_file(self, name):
+        legacy = vtkXMLImageDataWriter()
+        legacy.SetFileName(name+'.vti')
+        legacy.SetInputData(self.grid)
+        legacy.Write()
+
 if __name__ == '__main__':
     from EclipseReader import EclipseReader
     from sys import argv
@@ -32,5 +50,6 @@ if __name__ == '__main__':
 
     test_ER.file_read()
     test_VTK.set_grid_spec(test_ER)
+    test_VTK.add_run()
 
-    print(str(test_VTK.grid.GetNumberOfCells()))
+    test_VTK.write_file("test")
