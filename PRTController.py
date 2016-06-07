@@ -2,7 +2,7 @@ from PRTEntry import PRTEntry
 from collections import defaultdict
 
 
-class PRTController():
+class PRTController(object):
 
     def __init__(self, prt):
         self.prt_file = prt
