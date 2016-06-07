@@ -8,8 +8,7 @@ class PRTController(object):
         self.prt_file = prt
         self.runs = defaultdict(list)
 
-    def add_runs(self):
-        term = "pH"
+    def add_runs(self, term="pH"):
         opened = open(self.prt_file)
 
         for line in opened:

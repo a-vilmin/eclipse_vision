@@ -10,13 +10,18 @@ class VTKWriter(PRTController):
 
     def set_grid_spec(self, eclipse):
         """expect eclipse file reader object. refer to readme for specs"""
-        dx, dy, dz = eclipse.spacing()
         self.grid.SetOrigin(0, 0, 0)
+
+        dx, dy, dz = eclipse.spacing()
         self.grid.SetSpacing(dx, dy, dz)
 
         x_dim, y_dim, z_dim = eclipse.dims()
         self.grid.SetDimensions(int(x_dim)+1, int(y_dim)+1, int(z_dim)+1)
 
+    def create_runs(self, terms):
+        for term in terms:
+            super(VTKWriter, self).add_runs(term)
+    
 if __name__ == '__main__':
     from EclipseReader import EclipseReader
     from sys import argv
@@ -28,5 +33,4 @@ if __name__ == '__main__':
     test_ER.file_read()
     test_VTK.set_grid_spec(test_ER)
 
-    print(str(test_VTK.grid.GetNumberOfPoints()))
     print(str(test_VTK.grid.GetNumberOfCells()))
