@@ -10,9 +10,9 @@ class PRTController(object):
 
     def add_runs(self, term):
         opened = open(self.prt_file)
-
+        i = 0
         for line in opened:
-            if line.strip().startswith(term):
+            if line.strip().startswith(term) and i > 5 and i < 11:
                 temp = PRTEntry()
                 temp.read_type_info(line)
 
@@ -20,6 +20,9 @@ class PRTController(object):
                 temp.read_cell_info(opened)
 
                 self.runs[term] += [temp]
+            elif line.strip().startswith(term) and i <= 5:
+                i += 1
+            elif i == 11:
                 break
         opened.close()
 

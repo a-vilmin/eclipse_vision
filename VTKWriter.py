@@ -18,7 +18,7 @@ class VTKWriter():
         x_dim, y_dim, z_dim = eclipse.dims()
         self.grid.SetDimensions(int(x_dim)+1, int(y_dim)+1, int(z_dim)+1)
 
-    def add_run(self, term="pH"):
+    def add_run(self, term="SGAS"):
         # use pop and work backwards
         self.prt.add_runs(term)
         runs = self.prt.runs[term]
@@ -34,14 +34,14 @@ class VTKWriter():
                 array.InsertNextTuple1(scalar)
             self.grid.GetCellData().AddArray(array)
 
-    def write_poro(self, eclipse):
-        for direction, values in eclipse.perms.iteritems():
+    def add_poro(self, eclipse):
+        for direction, values in eclipse.grid.perms.iteritems():
             array = vtkFloatArray()
             array.SetName(direction)
             array.SetNumberOfComponents(1)
 
             while len(values):
-                val = values.pop().n
+                val = values.pop().val
                 array.InsertNextTuple1(val)
             self.grid.GetCellData().AddArray(array)
 

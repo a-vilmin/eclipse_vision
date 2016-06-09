@@ -5,6 +5,7 @@
 
 from SectionReader import SectionReader
 from collections import defaultdict
+from copy import deepcopy
 
 
 class EclipseGrid(SectionReader):
@@ -15,10 +16,10 @@ class EclipseGrid(SectionReader):
 
     class PermCell():
         def __init__(self, x, y, z, val):
-            self.x = x
-            self.y = y
-            self.z = z
-            self.val = val
+            self.x = float(x)
+            self.y = float(y)
+            self.z = float(z)
+            self.val = float(val)
 
     def handle(self, f):
         for line in f:
@@ -65,10 +66,10 @@ class EclipseGrid(SectionReader):
             line = line.strip().split()
 
             if not line or line[0] == '/':
-                return
+                continue
             else:
-                self.perms[line[1]] = self.perms[line[0]]
-    
+                self.perms[line[1]] = deepcopy(self.perms[line[0]])
+
 if __name__ == '__main__':
     from sys import argv
 

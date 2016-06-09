@@ -10,22 +10,19 @@ from Region import Region
 class EclipseReader():
     def __init__(self, f):
 
-        try:
-            self.read_f = f
-        except NameError:
-            print("Cannot open file")
-            return
-
+        self.read_f = f
         self.run_spec = RunSpec()
         self.grid = EclipseGrid()
         self.regions = Region()
 
     def file_read(self):
-        for line in self.read_f:
+        f = open(self.read_f)
+        for line in f:
+            
             if line.startswith('RUNSPEC'):
-                self.run_spec.handle(self.read_f)
+                self.run_spec.handle(f)
             elif line.startswith('GRID'):
-                self.grid.handle(self.read_f)
+                self.grid.handle(f)
 
     def dims(self):
         return (self.run_spec.x_dim, self.run_spec.y_dim, self.run_spec.z_dim)
