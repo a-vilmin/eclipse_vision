@@ -34,6 +34,17 @@ class VTKWriter():
                 array.InsertNextTuple1(scalar)
             self.grid.GetCellData().AddArray(array)
 
+    def write_poro(self, eclipse):
+        for direction, values in eclipse.perms.iteritems():
+            array = vtkFloatArray()
+            array.SetName(direction)
+            array.SetNumberOfComponents(1)
+
+            while len(values):
+                val = values.pop().n
+                array.InsertNextTuple1(val)
+            self.grid.GetCellData().AddArray(array)
+
     def write_file(self, name):
         legacy = vtkXMLImageDataWriter()
         legacy.SetFileName(name+'.vti')
