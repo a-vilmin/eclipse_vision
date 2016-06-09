@@ -1,13 +1,5 @@
 class PRTEntry():
 
-    # nested class to store cell data
-    class Cell():
-        def __init__(self, x, y, z):
-            self.y = y
-            self.x = x
-            self.z = z
-            self.n = 0.0
-
     # class methods
     def __init__(self):
         self.cells = []
@@ -42,13 +34,11 @@ class PRTEntry():
 
     def _read_points(self, curr_x, line):
         chopped = line.split(")")
-        y, z = chopped[0].split(",")[1:]
         n_values = chopped[1].split()
 
-        for i in curr_x:
-            temp = PRTEntry.Cell(i, y, z)
-            temp.n = float(n_values.pop(0))
-            self.cells += [temp]
+        while len(n_values):
+            n = float(n_values.pop(0))
+            self.cells += [n]
 
     def _reset_i(self, line):
 

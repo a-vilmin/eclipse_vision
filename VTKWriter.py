@@ -11,7 +11,7 @@ class VTKWriter():
     def set_grid_spec(self, eclipse):
         """expect eclipse file reader object. refer to readme for specs"""
         self.grid.SetOrigin(0, 0, 0)
-
+        print('setting grid')
         dx, dy, dz = eclipse.spacing()
         self.grid.SetSpacing(dx, dy, dz)
 
@@ -22,6 +22,7 @@ class VTKWriter():
         # use pop and work backwards
         self.prt.add_runs(term)
         runs = self.prt.runs[term]
+        print('setting vtk array')
 
         # run is PRTEntry object
         for run in runs:
@@ -30,7 +31,7 @@ class VTKWriter():
             array.SetNumberOfComponents(1)
 
             while len(run.cells):
-                scalar = run.cells.pop().n
+                scalar = run.cells.pop()
                 array.InsertNextTuple1(scalar)
             self.grid.GetCellData().AddArray(array)
 
@@ -46,6 +47,7 @@ class VTKWriter():
             self.grid.GetCellData().AddArray(array)
 
     def write_file(self, name):
+        print('writing vtk file')
         legacy = vtkXMLImageDataWriter()
         legacy.SetFileName(name+'.vti')
         legacy.SetInputData(self.grid)
