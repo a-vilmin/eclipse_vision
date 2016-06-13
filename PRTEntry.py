@@ -5,7 +5,7 @@ class PRTEntry():
 
     # class methods
     def __init__(self, dx, dy, dz):
-        '''cells initialized z, y, x'''
+        '''cells initialized in order: z, y, x'''
         self.cells = np.empty((dz, dy, dx))
         self.time = 0.0
         self.name = ''
@@ -48,7 +48,7 @@ class PRTEntry():
             self.cells[x-1][y-1][z-1] = n
 
     def _reset_i(self, line):
-
+        '''for getting new x values when collumns change'''
         chopped = line.strip().split()
         ret_val = []
 

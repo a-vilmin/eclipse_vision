@@ -14,6 +14,7 @@ class PRTController(object):
         self.z = z
 
     def add_runs(self, term):
+        '''searches for term and creates PRTEntry for all data in term'''
         opened = open(self.prt_file)
         for line in opened:
             if line.strip().startswith(term):
