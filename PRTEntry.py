@@ -1,8 +1,11 @@
+import numpy as np
+
+
 class PRTEntry():
 
     # class methods
-    def __init__(self):
-        self.cells = []
+    def __init__(self, dx, dy, dz):
+        self.cells = np.empty((dx, dy, dz))
         self.time = 0.0
         self.name = ''
 

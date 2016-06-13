@@ -19,7 +19,7 @@ class VTKWriter():
         self.grid.SetDimensions(int(x_dim)+1, int(y_dim)+1, int(z_dim)+1)
 
     def add_run(self, term="SGAS"):
-        # use pop and work backwards
+        
         self.prt.add_runs(term)
         runs = self.prt.runs[term]
         print('setting vtk array')
