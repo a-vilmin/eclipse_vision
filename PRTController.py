@@ -8,11 +8,19 @@ class PRTController(object):
         self.prt_file = prt
         self.runs = defaultdict(list)
 
+    def set_dims(self, dx, dy, dz):
+        self.dx = dx
+        self.dy = dy
+        self.dz = dz
+
+    def get_dims(self):
+        return (self.dx, self.dy, self.dz)
+
     def add_runs(self, term):
         opened = open(self.prt_file)
         for line in opened:
             if line.strip().startswith(term):
-                temp = PRTEntry()
+                temp = PRTEntry(self.get_dims())
                 temp.read_type_info(line)
 
                 self._skip_lines(opened, term)

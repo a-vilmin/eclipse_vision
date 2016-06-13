@@ -14,12 +14,12 @@ class VTKWriter():
         print('setting grid')
         dx, dy, dz = eclipse.spacing()
         self.grid.SetSpacing(dx, dy, dz)
+        self.prt.set_dims(dx, dy, dz)
 
         x_dim, y_dim, z_dim = eclipse.dims()
         self.grid.SetDimensions(int(x_dim)+1, int(y_dim)+1, int(z_dim)+1)
 
     def add_run(self, term="SGAS"):
-        
         self.prt.add_runs(term)
         runs = self.prt.runs[term]
         print('setting vtk array')

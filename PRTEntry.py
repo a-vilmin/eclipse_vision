@@ -37,11 +37,12 @@ class PRTEntry():
 
     def _read_points(self, curr_x, line):
         chopped = line.split(")")
+        y, z = int(chopped[0].split(',')[0:])
         n_values = chopped[1].split()
 
-        while len(n_values):
-            n = float(n_values.pop(0))
-            self.cells += [n]
+        for x in curr_x:
+            n = n_values.pop(0)
+            self.cells[x][y][z] = n
 
     def _reset_i(self, line):
 
