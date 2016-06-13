@@ -32,9 +32,10 @@ class VTKWriter():
             array.SetName(run.name+" at "+str(run.time)+" days.")
             array.SetNumberOfComponents(1)
 
+            # starts at bottom and moves down x rows, building up
             for z in range(z_dim-1, -1, -1):
-                for y in range(y_dim-1, -1, -1):
-                    for x in range(x_dim-1, -1, -1):
+                for y in range(0, y_dim):
+                    for x in range(0, x_dim):
                         scalar = run.cells[z][y][x]
                         array.InsertNextTuple1(scalar)
             self.grid.GetCellData().AddArray(array)
