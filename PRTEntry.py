@@ -17,6 +17,7 @@ class PRTEntry():
                 try:
                     t = float(each)
                     self.time = t
+                    self.name.pop()  # get rid of last underscore
                     break
                 except ValueError:
                     self.name += each+"_"
