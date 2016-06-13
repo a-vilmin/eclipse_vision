@@ -14,25 +14,29 @@ class VTKWriter():
         print('setting grid')
         dx, dy, dz = eclipse.spacing()
         self.grid.SetSpacing(dx, dy, dz)
-        self.prt.set_dims(dx, dy, dz)
 
         x_dim, y_dim, z_dim = eclipse.dims()
+
+        self.prt.set_dims(x_dim, y_dim, z_dim)
         self.grid.SetDimensions(int(x_dim)+1, int(y_dim)+1, int(z_dim)+1)
 
-    def add_run(self, term="SGAS"):
+    def add_run(self, eclipse, term="SGAS"):
         self.prt.add_runs(term)
         runs = self.prt.runs[term]
         print('setting vtk array')
 
+        x_dim, y_dim, z_dim = eclipse.dims()
         # run is PRTEntry object
         for run in runs:
             array = vtkFloatArray()
             array.SetName(run.name+" at "+str(run.time)+" days.")
             array.SetNumberOfComponents(1)
 
-            while len(run.cells):
-                scalar = run.cells.pop()
-                array.InsertNextTuple1(scalar)
+            for z in range(z_dim-1, -1, -1):
+                for y in range(y_dim-1, -1, -1):
+                    for x in range(x_dim-1, -1, -1):
+                        scalar = run.cells[z][y][x]
+                        array.InsertNextTuple1(scalar)
             self.grid.GetCellData().AddArray(array)
 
     def add_poro(self, eclipse):
@@ -57,12 +61,11 @@ if __name__ == '__main__':
     from EclipseReader import EclipseReader
     from sys import argv
 
-    f = open(argv[1])
-    test_ER = EclipseReader(f)
+    test_ER = EclipseReader(argv[1])
     test_VTK = VTKWriter(argv[2])
 
     test_ER.file_read()
     test_VTK.set_grid_spec(test_ER)
-    test_VTK.add_run()
+    test_VTK.add_run(test_ER)
 
     test_VTK.write_file("test")

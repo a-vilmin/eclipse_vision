@@ -5,7 +5,8 @@ class PRTEntry():
 
     # class methods
     def __init__(self, dx, dy, dz):
-        self.cells = np.empty((dx, dy, dz))
+        '''cells initialized z, y, x'''
+        self.cells = np.empty((dz, dy, dx))
         self.time = 0.0
         self.name = ''
 

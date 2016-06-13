@@ -8,26 +8,23 @@ class PRTController(object):
         self.prt_file = prt
         self.runs = defaultdict(list)
 
-    def set_dims(self, dx, dy, dz):
-        self.dx = dx
-        self.dy = dy
-        self.dz = dz
-
-    def get_dims(self):
-        return (self.dx, self.dy, self.dz)
+    def set_dims(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
 
     def add_runs(self, term):
         opened = open(self.prt_file)
         for line in opened:
             if line.strip().startswith(term):
-                temp = PRTEntry(self.get_dims())
+                temp = PRTEntry(self.x, self.y, self.z)
                 temp.read_type_info(line)
 
                 self._skip_lines(opened, term)
                 temp.read_cell_info(opened)
 
                 self.runs[term] += [temp]
-                print(temp.name+" at "+temp.time+" read.")
+                print(temp.name+" at "+str(temp.time)+" read.")
         opened.close()
 
     def _skip_lines(self, f, term):
