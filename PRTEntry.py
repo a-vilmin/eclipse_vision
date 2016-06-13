@@ -18,7 +18,7 @@ class PRTEntry():
                     self.time = t
                     break
                 except ValueError:
-                    self.name += each
+                    self.name += each+"_"
         except:
             print("Incorrect format passed to PRTEntry object. Grid data" +
                   "format not recognized!")
@@ -37,12 +37,13 @@ class PRTEntry():
 
     def _read_points(self, curr_x, line):
         chopped = line.split(")")
-        y, z = int(chopped[0].split(',')[0:])
+        y, z = chopped[0].split(',')[1:]
+        y, z = int(y), int(z)
         n_values = chopped[1].split()
 
         for x in curr_x:
             n = n_values.pop(0)
-            self.cells[x][y][z] = n
+            self.cells[x-1][y-1][z-1] = n
 
     def _reset_i(self, line):
 
@@ -62,7 +63,7 @@ if __name__ == '__main__':
     types = open(argv[1])
     prt = open(argv[2])
 
-    test = PRTEntry()
+    test = PRTEntry(100, 100, 100)
     test.read_type_info(types.readline())
 
     for line in prt:
@@ -73,7 +74,7 @@ if __name__ == '__main__':
 
     print("Type name is: " + test.name)
     print("Type time is: " + str(test.time))
-    print("Number of Cells: " + str(len(test.cells)))
+    print(test.cells[99][0][0])
 
     types.close()
     prt.close()
