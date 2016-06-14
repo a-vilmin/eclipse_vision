@@ -33,7 +33,7 @@ class VTKWriter():
             array.SetNumberOfComponents(1)
 
             # starts at bottom and moves down x rows, building up
-            for z in range(z_dim-1, -1, -1):
+            for z in range(z_dim - 1, -1, -1):
                 for y in range(0, y_dim):
                     for x in range(0, x_dim):
                         scalar = run.cells[z][y][x]

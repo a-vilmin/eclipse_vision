@@ -45,7 +45,7 @@ class PRTEntry():
 
         for x in curr_x:
             n = n_values.pop(0)
-            self.cells[x-1][y-1][z-1] = n
+            self.cells[z-1][y-1][x-1] = n
 
     def _reset_i(self, line):
         '''for getting new x values when collumns change'''
