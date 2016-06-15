@@ -30,12 +30,12 @@ class PRTEntry():
         for line in f:
             if line.startswith(" (I,  J,  K)"):
                 curr_x = self._reset_i(line)
-            elif line.startswith("-------"):
-                return
+            elif line.startswith(" (*,"):
+                self._read_points(curr_x, line)
             elif line.strip() == "":
                 continue
             else:
-                self._read_points(curr_x, line)
+                return
 
     def _read_points(self, curr_x, line):
         chopped = line.split(")")

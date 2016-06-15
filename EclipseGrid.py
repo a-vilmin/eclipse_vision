@@ -2,9 +2,8 @@
 # Illinois State Geological Survey, University of Illinois
 # 2015-05-31
 
-
+import numpy as np
 from SectionReader import SectionReader
-from collections import defaultdict
 from copy import deepcopy
 
 
@@ -12,14 +11,11 @@ class EclipseGrid(SectionReader):
     def __init__(self):
         self.equals = {}
         self.include_file = ""
-        self.perms = defaultdict(list)
+        self.perms = np.array(1)
 
-    class PermCell():
-        def __init__(self, x, y, z, val):
-            self.x = float(x)
-            self.y = float(y)
-            self.z = float(z)
-            self.val = float(val)
+    def set_dims(self, dim_tuple):
+        dz, dy, dx = dim_tuple
+        self.perms = np.empty((dz, dy, dx))
 
     def handle(self, f):
         for line in f:
@@ -54,12 +50,11 @@ class EclipseGrid(SectionReader):
             if not line or line[0] == '/':
                 continue
             elif line[0] == 'COPY':
-                self._copy(grid_data)
+                return
             else:
-                direction, val, x = line[:3]
+                val, x = line[1:3]
                 y, z = (line[4], line[6])
-                cell = EclipseGrid.PermCell(x, y, z, val)
-                self.perms[direction] += [cell]
+                self.perms[int(z)-1][int(y)-1][int(x)-1] = float(val)
 
     def _copy(self, f):
         for line in f:

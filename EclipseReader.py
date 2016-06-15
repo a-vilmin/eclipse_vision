@@ -21,6 +21,7 @@ class EclipseReader():
             
             if line.startswith('RUNSPEC'):
                 self.run_spec.handle(f)
+                self.grid.set_dims(self.dims())
             elif line.startswith('GRID'):
                 self.grid.handle(f)
 

@@ -20,7 +20,7 @@ class VTKWriter():
         self.prt.set_dims(x_dim, y_dim, z_dim)
         self.grid.SetDimensions(int(x_dim)+1, int(y_dim)+1, int(z_dim)+1)
 
-    def add_run(self, eclipse, term="SGAS"):
+    def add_run(self, eclipse, term="PRESSURE"):
         self.prt.add_runs(term)
         runs = self.prt.runs[term]
         print('setting vtk array')
@@ -40,22 +40,25 @@ class VTKWriter():
                         array.InsertNextTuple1(scalar)
             self.grid.GetCellData().AddArray(array)
 
-    def add_poro(self, eclipse):
-        for direction, values in eclipse.grid.perms.iteritems():
-            array = vtkFloatArray()
-            array.SetName(direction)
-            array.SetNumberOfComponents(1)
+    def add_perms(self, eclipse):
+        array = vtkFloatArray()
+        array.SetName("PERM Values")
+        array.SetNumberOfComponents(1)
 
-            while len(values):
-                val = values.pop().val
-                array.InsertNextTuple1(val)
-            self.grid.GetCellData().AddArray(array)
+        x_dim, y_dim, z_dim = eclipse.dims()
+
+        for z in range(z_dim - 1, -1, -1):
+            for y in range(0, y_dim):
+                for x in range(0, x_dim):
+                    scalar = eclipse.grid.perms[z][y][x]
+                    array.InsertNextTuple1(scalar)
+        self.grid.GetCellData().AddArray(array)
 
     def write_file(self, name):
         print('writing vtk file')
         legacy = vtkXMLImageDataWriter()
         legacy.SetFileName(name+'.vti')
-        legacy.SetInputData(self.grid)
+        legacy.SetInput(self.grid)
         legacy.Write()
 
 if __name__ == '__main__':
