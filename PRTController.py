@@ -23,7 +23,7 @@ class PRTController(object):
         '''searches for term and creates PRTEntry for all data in term'''
         opened = open(self.prt_file)
 
-        for line in tqdm(opened, 'Searching PRT', total=self.f_len, ascii='#'):
+        for line in tqdm(opened, 'Searching PRT', total=self.f_len):
             if line.strip().startswith(term):
                 temp = PRTEntry(self.x, self.y, self.z)
                 temp.read_type_info(line)

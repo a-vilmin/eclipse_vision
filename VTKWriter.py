@@ -27,13 +27,13 @@ class VTKWriter():
 
         x_dim, y_dim, z_dim = eclipse.dims()
         # run is PRTEntry object
-        for run in tqdm(runs, "creating "+term+" vtk arrays", ascii='#'):
+        for run in tqdm(runs, "creating "+term+" vtk arrays"):
 
             tmp = vtkImageData()
             self.set_grid_spec(tmp, eclipse)
 
             array = vtkFloatArray()
-            array.SetName(run.name+" at "+str(run.time)+" days.")
+            array.SetName(run.name)
             array.SetNumberOfComponents(1)
 
             # starts at bottom and moves down x rows, building up
@@ -70,7 +70,7 @@ class VTKWriter():
             except OSError:
                 pass
 
-            for each in tqdm(value, "Writing "+key+" vtk files", ascii='#'):
+            for each in tqdm(value, "Writing "+key+" vtk files"):
                 legacy = vtkXMLImageDataWriter()
                 legacy.SetFileName("./"+key+"/"+key+"_"+str(i)+'.vti')
                 legacy.SetInput(each)
