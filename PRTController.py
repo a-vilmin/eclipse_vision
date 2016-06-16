@@ -8,6 +8,13 @@ class PRTController(object):
     def __init__(self, prt):
         self.prt_file = prt
         self.runs = defaultdict(list)
+        self.f_len = self._get_len(prt)
+
+    def _get_len(self, fname):
+        with open(fname) as f:
+            for i, l in enumerate(f):
+                pass
+        return i + 1
 
     def set_dims(self, dim_tup):
         self.x, self.y, self.z = dim_tup
@@ -15,7 +22,8 @@ class PRTController(object):
     def add_runs(self, term):
         '''searches for term and creates PRTEntry for all data in term'''
         opened = open(self.prt_file)
-        for line in tqdm(opened, 'finding terms in PRT'):
+
+        for line in tqdm(opened, 'Searching PRT', total=self.f_len, ascii='#'):
             if line.strip().startswith(term):
                 temp = PRTEntry(self.x, self.y, self.z)
                 temp.read_type_info(line)

@@ -1,13 +1,15 @@
 from PRTController import PRTController
 from vtk import vtkImageData, vtkFloatArray, vtkXMLImageDataWriter
+from collections import defaultdict
 from tqdm import *
+from os import mkdir
 
 
 class VTKWriter():
 
     def __init__(self, prt):
         self.prt = PRTController(prt)
-        self.grid = []
+        self.grid = defaultdict(list)
 
     def set_grid_spec(self, vtk, eclipse):
         """expect eclipse file reader object. refer to readme for specs"""
@@ -25,7 +27,7 @@ class VTKWriter():
 
         x_dim, y_dim, z_dim = eclipse.dims()
         # run is PRTEntry object
-        for run in tqdm(runs, "creating "+term+" vtk arrays"):
+        for run in tqdm(runs, "creating "+term+" vtk arrays", ascii='#'):
 
             tmp = vtkImageData()
             self.set_grid_spec(tmp, eclipse)
@@ -41,7 +43,7 @@ class VTKWriter():
                         scalar = run.cells[z][y][x]
                         array.InsertNextTuple1(scalar)
             tmp.GetCellData().AddArray(array)
-            self.grid += [tmp]
+            self.grid[term] += [tmp]
 
     def add_perms(self, eclipse):
         tmp = vtkImageData()
@@ -61,13 +63,20 @@ class VTKWriter():
         self.grid += [tmp]
 
     def write_file(self, term):
-        i = 1
-        for each in tqdm(self.grid, "Writing VTK Files"):
-            legacy = vtkXMLImageDataWriter()
-            legacy.SetFileName(term+"_"+str(i)+'.vti')
-            legacy.SetInput(each)
-            legacy.Write()
-            i += 1
+        for key, value in self.grid.iteritems():
+            i = 1
+            try:
+                mkdir(key)
+            except OSError:
+                pass
+
+            for each in tqdm(value, "Writing "+key+" vtk files", ascii='#'):
+                legacy = vtkXMLImageDataWriter()
+                legacy.SetFileName("./"+key+"/"+key+"_"+str(i)+'.vti')
+                legacy.SetInput(each)
+                legacy.Write()
+                i += 1
+
 if __name__ == '__main__':
     from EclipseReader import EclipseReader
     from sys import argv
