@@ -1,5 +1,6 @@
 from PRTEntry import PRTEntry
 from collections import defaultdict
+from tqdm import *
 
 
 class PRTController(object):
@@ -8,15 +9,13 @@ class PRTController(object):
         self.prt_file = prt
         self.runs = defaultdict(list)
 
-    def set_dims(self, x, y, z):
-        self.x = x
-        self.y = y
-        self.z = z
+    def set_dims(self, dim_tup):
+        self.x, self.y, self.z = dim_tup
 
     def add_runs(self, term):
         '''searches for term and creates PRTEntry for all data in term'''
         opened = open(self.prt_file)
-        for line in opened:
+        for line in tqdm(opened, 'finding terms in PRT'):
             if line.strip().startswith(term):
                 temp = PRTEntry(self.x, self.y, self.z)
                 temp.read_type_info(line)
@@ -25,7 +24,6 @@ class PRTController(object):
                 temp.read_cell_info(opened)
 
                 self.runs[term] += [temp]
-                print(temp.name+" at "+str(temp.time)+" read.")
         opened.close()
 
     def _skip_lines(self, f, term):

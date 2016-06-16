@@ -11,10 +11,9 @@ class ModelMaker():
     def run(self):
         self.eclipse_read.file_read()
 
-        self.vtk_write.set_grid_spec(self.eclipse_read)
-        self.vtk_write.add_perms(self.eclipse_read)
+        # self.vtk_write.add_perms(self.eclipse_read)
         self.vtk_write.add_run(self.eclipse_read)
-        self.vtk_write.write_file("perm_pressure")
+        self.vtk_write.write_file("pressure")
 
 if __name__ == '__main__':
     from sys import argv
