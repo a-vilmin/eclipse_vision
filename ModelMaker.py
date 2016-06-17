@@ -8,11 +8,11 @@ class ModelMaker():
         self.vtk_write = VTKWriter(prt_file)
         self.eclipse_read = EclipseReader(data_file)
 
-    def run(self):
+    def run(self, terms):
         self.eclipse_read.file_read()
 
-        # self.vtk_write.add_perms(self.eclipse_read)
-        self.vtk_write.add_run(self.eclipse_read)
+        self.vtk_write.add_perms(self.eclipse_read)
+        self.vtk_write.add_run(self.eclipse_read, terms)
         self.vtk_write.write_file("pressure")
 
 if __name__ == '__main__':

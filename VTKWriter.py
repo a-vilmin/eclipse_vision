@@ -11,7 +11,7 @@ class VTKWriter():
         self.prt = PRTController(prt)
         self.grid = defaultdict(list)
 
-    def set_grid_spec(self, vtk, eclipse):
+    def _set_grid_spec(self, vtk, eclipse):
         """expect eclipse file reader object. refer to readme for specs"""
         vtk.SetOrigin(0, 0, 0)
         dx, dy, dz = eclipse.spacing()
@@ -20,30 +20,30 @@ class VTKWriter():
         x_dim, y_dim, z_dim = eclipse.dims()
         vtk.SetDimensions(int(x_dim)+1, int(y_dim)+1, int(z_dim)+1)
 
-    def add_run(self, eclipse, term="PRESSURE"):
+    def add_run(self, eclipse, search_terms):
         self.prt.set_dims(eclipse.dims())
-        self.prt.add_runs(term)
-        runs = self.prt.runs[term]
+        self.prt.add_runs(search_terms)
 
         x_dim, y_dim, z_dim = eclipse.dims()
         # run is PRTEntry object
-        for run in tqdm(runs, "creating "+term+" vtk arrays"):
+        for term, runs in tqdm(self.prt.runs.iteritems(),
+                               "creating vtk arrays"):
+            for run in runs:
+                tmp = vtkImageData()
+                self._set_grid_spec(tmp, eclipse)
 
-            tmp = vtkImageData()
-            self.set_grid_spec(tmp, eclipse)
+                array = vtkFloatArray()
+                array.SetName(run.name)
+                array.SetNumberOfComponents(1)
 
-            array = vtkFloatArray()
-            array.SetName(run.name)
-            array.SetNumberOfComponents(1)
-
-            # starts at bottom and moves down x rows, building up
-            for z in range(z_dim - 1, -1, -1):
-                for y in range(0, y_dim):
-                    for x in range(0, x_dim):
-                        scalar = run.cells[z][y][x]
-                        array.InsertNextTuple1(scalar)
-            tmp.GetCellData().AddArray(array)
-            self.grid[term] += [tmp]
+                # starts at bottom and moves down x rows, building up
+                for z in range(z_dim - 1, -1, -1):
+                    for y in range(0, y_dim):
+                        for x in range(0, x_dim):
+                            scalar = run.cells[z][y][x]
+                            array.InsertNextTuple1(scalar)
+                tmp.GetCellData().AddArray(array)
+                self.grid[term] += [tmp]
 
     def add_perms(self, eclipse):
         tmp = vtkImageData()
