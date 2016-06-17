@@ -1,7 +1,7 @@
 from PRTController import PRTController
 from vtk import vtkImageData, vtkFloatArray, vtkXMLImageDataWriter
 from collections import defaultdict
-from tqdm import *
+from tqdm import tqdm
 from os import mkdir
 
 
@@ -26,9 +26,8 @@ class VTKWriter():
 
         x_dim, y_dim, z_dim = eclipse.dims()
         # run is PRTEntry object
-        for term, runs in tqdm(self.prt.runs.iteritems(),
-                               "creating vtk arrays"):
-            for run in runs:
+        for term, runs in self.prt.runs.iteritems():
+            for run in tqdm(runs, "creating "+term+"'s vtk arrays"):
                 tmp = vtkImageData()
                 self._set_grid_spec(tmp, eclipse)
 
@@ -47,20 +46,21 @@ class VTKWriter():
 
     def add_perms(self, eclipse):
         tmp = vtkImageData()
-        array = vtkFloatArray()
+        self._set_grid_spec(tmp, eclipse)
 
+        array = vtkFloatArray()
         array.SetName("PERM Values")
         array.SetNumberOfComponents(1)
 
         x_dim, y_dim, z_dim = eclipse.dims()
 
-        for z in range(z_dim - 1, -1, -1):
+        for z in tqdm(range(z_dim - 1, -1, -1), "Writing Perm Arrays"):
             for y in range(0, y_dim):
                 for x in range(0, x_dim):
                     scalar = eclipse.grid.perms[z][y][x]
                     array.InsertNextTuple1(scalar)
         tmp.GetCellData().AddArray(array)
-        self.grid += [tmp]
+        self.grid["PERMS"] += [tmp]
 
     def write_file(self, term):
         for key, value in self.grid.iteritems():

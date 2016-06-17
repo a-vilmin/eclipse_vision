@@ -1,6 +1,8 @@
+from __future__ import print_function
 from PRTEntry import PRTEntry
 from collections import defaultdict
-from tqdm import *
+from tqdm import tqdm
+import sys
 
 
 class PRTController(object):
@@ -12,8 +14,14 @@ class PRTController(object):
 
     def _get_len(self, fname):
         with open(fname) as f:
+            sys.stdout.write('Opening files...')
+            sys.stdout.flush()
             for i, l in enumerate(f):
+                if i % 1000000 == 0:
+                    sys.stdout.write('.')
+                    sys.stdout.flush()
                 pass
+        print("")
         return i + 1
 
     def set_dims(self, dim_tup):
@@ -25,6 +33,7 @@ class PRTController(object):
 
         for line in tqdm(opened, 'Searching PRT', total=self.f_len):
             if line.strip().startswith(terms):
+                term = self._det_term(line, terms)
                 temp = PRTEntry(self.x, self.y, self.z)
                 temp.read_type_info(line)
 
@@ -38,6 +47,11 @@ class PRTController(object):
         for line in f:
             if line.strip().startswith(term):
                 return
+
+    def _det_term(self, line, terms):
+        for each in terms:
+            if line.strip().startswith(each):
+                return each
 
 if __name__ == '__main__':
     from sys import argv

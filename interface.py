@@ -13,14 +13,14 @@ class Interface(object):
         self.body()
 
     def search(self):
-        terms = input("What terms are you modeling today? Please " +
-                      "enter terms seperated by a space")
+        terms = raw_input("What terms are you modeling today? Please " +
+                          "enter terms seperated by a space.\n")
         return terms.strip().split()
 
     def file_finder(self):
         while True:
-            prt = input("What is your *.PRT file? Please " +
-                        "include full file path.").strip()
+            prt = raw_input("What is your *.PRT file? Please " +
+                            "include full file path.\n")
 
             if path.isfile(prt) and prt.endswith(".PRT"):
                 self.files["PRT"] = prt
@@ -29,14 +29,19 @@ class Interface(object):
                 print(prt+" is not a valid file.")
 
         while True:
-            data = input("What is your *.data file? Please " +
-                         "include full file path.").strip()
+            data = raw_input("What is your *.data file? Please " +
+                             "include full file path.\n").strip()
 
-            if path.isfile(data) and prt.endswith(".data"):
+            if path.isfile(data) and data.endswith(".data"):
                 self.files["DATA"] = data
                 break
             else:
-                print(data+" is not a valid file.")
+                if not path.isfile(data):
+                    print(data+" does not exist!")
+                elif not prt.endswith(".data"):
+                    print(data+" is not correct file type")
+                else:
+                    print("Unknown error with "+data)
 
     def body(self):
         self.file_finder()
@@ -45,4 +50,5 @@ class Interface(object):
         while True:
             terms = tuple(self.search())
             modeler.run(terms)
-
+            print("Visual files created")
+            return
