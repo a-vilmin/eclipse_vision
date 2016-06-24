@@ -5,7 +5,7 @@ from EclipseReader import EclipseReader
 class ModelMaker():
     def __init__(self, data_file, prt_file, wk_dir):
 
-        self.vtk_write = VTKWriter(prt_file)
+        self.vtk_write = VTKWriter(prt_file, wk_dir)
         self.eclipse_read = EclipseReader(data_file, wk_dir)
 
     def run(self, terms):

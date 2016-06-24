@@ -2,15 +2,16 @@ from PRTController import PRTController
 from vtk import vtkImageData, vtkFloatArray, vtkXMLImageDataWriter
 from collections import defaultdict
 from tqdm import tqdm
-from os import makedirs, path, getcwd
+from os import makedirs, path
 import time
 
 
 class VTKWriter():
 
-    def __init__(self, prt):
+    def __init__(self, prt, direct):
         self.prt = PRTController(prt)
         self.grid = defaultdict(list)
+        self.dir = direct
 
     def _set_grid_spec(self, vtk, eclipse):
         """expect eclipse file reader object. refer to readme for specs"""
@@ -64,10 +65,8 @@ class VTKWriter():
         self.grid["PERMS"] += [tmp]
 
     def write_file(self):
-        root = getcwd()
-
         for key, value in self.grid.iteritems():
-            dir_name = path.join(root, time.strftime("%d_%m_%Y"))
+            dir_name = path.join(self.dir, time.strftime("%d_%m_%Y"))
             dir_name = path.join(dir_name, key)
 
             try:
