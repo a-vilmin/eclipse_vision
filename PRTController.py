@@ -31,20 +31,24 @@ class PRTController(object):
         '''searches for term and creates PRTEntry for all data in term'''
         opened = open(self.prt_file)
 
-        for line in tqdm(opened, 'Searching PRT', total=self.f_len):
-            if line.strip().startswith(terms):
-                term = self._det_term(line, terms)
-                temp = PRTEntry(self.x, self.y, self.z)
-                temp.read_type_info(line)
+        with tqdm(total=self.f_len) as pbar:
+            pbar.set_description("Searching PRT")
+            for line in opened:
+                if line.strip().startswith(terms):
+                    term = self._det_term(line, terms)
+                    temp = PRTEntry(self.x, self.y, self.z)
+                    temp.read_type_info(line)
 
-                self._skip_lines(opened, term)
-                temp.read_cell_info(opened)
+                    self._skip_lines(opened, term, pbar)
+                    temp.read_cell_info(opened, pbar)
 
-                self.runs[term] += [temp]
+                    self.runs[term] += [temp]
+                pbar.update(1)
         opened.close()
 
-    def _skip_lines(self, f, term):
+    def _skip_lines(self, f, term, pbar):
         for line in f:
+            pbar.update(1)
             if line.strip().startswith(term):
                 return
 

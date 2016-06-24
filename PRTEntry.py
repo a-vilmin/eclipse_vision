@@ -25,9 +25,10 @@ class PRTEntry():
             print("Incorrect format passed to PRTEntry object. Grid data" +
                   "format not recognized!")
 
-    def read_cell_info(self, f, test_list=[]):  # testing; default list empty
-        curr_x = test_list
+    def read_cell_info(self, f, pbar):
+        curr_x = []
         for line in f:
+            pbar.update(1)
             if line.startswith(" (I,  J,  K)"):
                 curr_x = self._reset_i(line)
             elif line.startswith(" (*,"):
