@@ -29,7 +29,6 @@ class Interface(object):
                         self.files["PRT"] += [path.join(root, f)]
                     elif f.endswith(".data"):
                         self.files["DATA"] += [path.join(root, f)]
-                        print(len(self.files["DATA"]))
 
             if not self.files["PRT"]:
                 print("Directory doesn't contain a *.PRT file. Please try " +
