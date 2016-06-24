@@ -1,12 +1,13 @@
 from ModelMaker import ModelMaker
 from collections import defaultdict
-from os import path
+from os import walk
 
 
 class Interface(object):
 
     def __init__(self):
         self.files = defaultdict(str)
+        self.directory = ''
 
     def start(self):
         print("Welcome to Petrel/Eclipse visual modeler.")
@@ -19,36 +20,30 @@ class Interface(object):
 
     def file_finder(self):
         while True:
-            prt = raw_input("What is your *.PRT file? Please " +
-                            "include full file path.\n")
+            path = raw_input("What is the directory containing your " +
+                             "project?\n")
 
-            if path.isfile(prt) and prt.endswith(".PRT"):
-                self.files["PRT"] = prt
-                break
+            for root, dirs, files in walk(path):
+                for f in files:
+                    if f.endswith(".PRT"):
+                        self.files["PRT"] = root + f
+                    elif f.endswith(".data"):
+                        self.files["DATA"] = root + f
+
+            if not self.files["PRT"]:
+                print("Directory doesn't contain a *.PRT file. Please try " +
+                      "again.\n")
+                continue
+            elif not self.files["DATA"]:
+                print("Directory doesn't contain a *.data file. Please try " +
+                      "again.\n")
             else:
-                print(prt+" is not a valid file.")
-
-        while True:
-            data = raw_input("What is your *.data file? Please " +
-                             "include full file path.\n").strip()
-
-            if path.isfile(data) and data.endswith(".data"):
-                self.files["DATA"] = data
                 break
-            else:
-                if not path.isfile(data):
-                    print(data+" does not exist!")
-                elif not prt.endswith(".data"):
-                    print(data+" is not correct file type")
-                else:
-                    print("Unknown error with "+data)
 
     def body(self):
         self.file_finder()
         modeler = ModelMaker(self.files["DATA"], self.files["PRT"])
 
-        while True:
-            terms = tuple(self.search())
-            modeler.run(terms)
-            print("Visual files created")
-            return
+        terms = tuple(self.search())
+        modeler.run(terms)
+        print("Visual modeling files created")

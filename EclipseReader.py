@@ -18,7 +18,7 @@ class EclipseReader():
     def file_read(self):
         f = open(self.read_f)
         for line in f:
-            
+
             if line.startswith('RUNSPEC'):
                 self.run_spec.handle(f)
                 self.grid.set_dims(self.dims())
