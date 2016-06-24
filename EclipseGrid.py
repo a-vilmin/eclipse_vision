@@ -23,7 +23,7 @@ class EclipseGrid(SectionReader):
         for line in f:
             if super(EclipseGrid, self)._section_done(line):
                 return
-
+            
             if line.startswith('EQUALS'):
                 self._equals_handler(f)
             elif line.startswith('INCLUDE'):

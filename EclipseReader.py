@@ -18,7 +18,6 @@ class EclipseReader():
     def file_read(self):
         f = open(self.read_f)
         for line in f:
-
             if line.startswith('RUNSPEC'):
                 self.run_spec.handle(f)
                 self.grid.set_dims(self.dims())
@@ -34,8 +33,9 @@ class EclipseReader():
 
 if __name__ == '__main__':
     from sys import argv
-    f = open(argv[1])
-    test = EclipseReader(f)
+    from os import getcwd
+    f = argv[1]
+    test = EclipseReader(f, getcwd()+"\\vG_1")
 
     test.file_read()
     print(test.run_spec.title)

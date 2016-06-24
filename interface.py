@@ -6,7 +6,7 @@ from os import walk, path
 class Interface(object):
 
     def __init__(self):
-        self.files = defaultdict(str)
+        self.files = defaultdict(list)
         self.direct = ''
 
     def start(self):
@@ -26,9 +26,10 @@ class Interface(object):
             for root, dirs, files in walk(direct):
                 for f in files:
                     if f.endswith(".PRT"):
-                        self.files["PRT"] = path.join(root, f)
+                        self.files["PRT"] += [path.join(root, f)]
                     elif f.endswith(".data"):
-                        self.files["DATA"] = path.join(root, f)
+                        self.files["DATA"] += [path.join(root, f)]
+                        print(len(self.files["DATA"]))
 
             if not self.files["PRT"]:
                 print("Directory doesn't contain a *.PRT file. Please try " +
@@ -40,7 +41,29 @@ class Interface(object):
             else:
                 self.direct = direct
                 break
+        self.file_check()
 
+    def file_check(self):
+        if len(self.files["DATA"]) > 1:
+            print("There are more than one file with the *.data extension " +
+                  "listed here:")
+            for each in self.files["DATA"]:
+                print(each)
+            print('')
+            self.files["DATA"] = raw_input("Please enter the file you want\n")
+        else:
+            self.files["DATA"] = self.files["DATA"][0]
+
+        if len(self.files["PRT"]) > 1:
+            print("There are more than one file with the *.PRT extension " +
+                  "listed here:")
+            for each in self.files["PRT"]:
+                print(each)
+            print('')
+            self.files["PRT"] = raw_input("Please enter the file you want\n")
+        else:
+            self.files["PRT"] = self.files["PRT"][0]
+        
     def body(self):
         self.file_finder()
         model = ModelMaker(self.files["DATA"], self.files["PRT"], self.direct)
