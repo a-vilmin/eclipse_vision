@@ -2,7 +2,8 @@ from PRTController import PRTController
 from vtk import vtkImageData, vtkFloatArray, vtkXMLImageDataWriter
 from collections import defaultdict
 from tqdm import tqdm
-from os import mkdir
+from os import makedirs, path, getcwd
+import time
 
 
 class VTKWriter():
@@ -62,17 +63,22 @@ class VTKWriter():
         tmp.GetCellData().AddArray(array)
         self.grid["PERMS"] += [tmp]
 
-    def write_file(self, term):
+    def write_file(self):
+        root = getcwd()
+
         for key, value in self.grid.iteritems():
-            i = 1
+            dir_name = path.join(root, time.strftime("%d_%m_%Y"))
+            dir_name = path.join(dir_name, key)
+
             try:
-                mkdir(key)
+                makedirs(dir_name)
             except OSError:
                 pass
 
+            i = 1
             for each in tqdm(value, "Writing "+key+" vtk files"):
                 legacy = vtkXMLImageDataWriter()
-                legacy.SetFileName("./"+key+"/"+key+"_"+str(i)+'.vti')
+                legacy.SetFileName(path.join(dir_name, key + str(i) + '.vti'))
                 legacy.SetInput(each)
                 legacy.Write()
                 i += 1

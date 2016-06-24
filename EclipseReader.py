@@ -8,11 +8,11 @@ from Region import Region
 
 
 class EclipseReader():
-    def __init__(self, f):
+    def __init__(self, f, direct):
 
         self.read_f = f
         self.run_spec = RunSpec()
-        self.grid = EclipseGrid()
+        self.grid = EclipseGrid(direct)
         self.regions = Region()
 
     def file_read(self):

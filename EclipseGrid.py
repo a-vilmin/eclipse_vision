@@ -5,13 +5,15 @@
 import numpy as np
 from SectionReader import SectionReader
 from copy import deepcopy
+from os import path
 
 
 class EclipseGrid(SectionReader):
-    def __init__(self):
+    def __init__(self, directory):
         self.equals = {}
         self.include_file = ""
         self.perms = np.array(1)
+        self.directory = directory
 
     def set_dims(self, dim_tuple):
         dz, dy, dx = dim_tuple
@@ -25,7 +27,7 @@ class EclipseGrid(SectionReader):
             if line.startswith('EQUALS'):
                 self._equals_handler(f)
             elif line.startswith('INCLUDE'):
-                self.include_file = next(f).strip()
+                self.include_file = path.join(self.directory, next(f).strip())
                 self._include_handler()
 
     def _equals_handler(self, f):
