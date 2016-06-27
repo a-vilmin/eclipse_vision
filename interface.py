@@ -25,9 +25,11 @@ class Interface(object):
 
             for root, dirs, files in walk(direct):
                 for f in files:
-                    if f.endswith(".PRT"):
+                    case_switched = f.lower()
+
+                    if case_switched.endswith(".PRT"):
                         self.files["PRT"] += [path.join(root, f)]
-                    elif f.endswith(".data"):
+                    elif case_switched.endswith(".data"):
                         self.files["DATA"] += [path.join(root, f)]
 
             if not self.files["PRT"]:
