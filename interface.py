@@ -46,12 +46,21 @@ class Interface(object):
 
     def file_check(self):
         if len(self.files["DATA"]) > 1:
+
             print("There are more than one file with the *.data extension " +
                   "listed here:")
             for each in self.files["DATA"]:
                 print(each)
             print('')
-            self.files["DATA"] = raw_input("Please enter the file you want\n")
+
+            while True:
+                choice = raw_input("Please enter the file you want to use\n")
+
+                if path.isfile(choice):
+                    self.files["DATA"] = choice
+                    break
+                else:
+                    print("You must have typed that in wrong. Try again.")
         else:
             self.files["DATA"] = self.files["DATA"][0]
 
@@ -61,10 +70,18 @@ class Interface(object):
             for each in self.files["PRT"]:
                 print(each)
             print('')
-            self.files["PRT"] = raw_input("Please enter the file you want\n")
+
+            while True:
+                choice = raw_input("Please enter the file you want to use\n")
+
+                if path.isfile(choice):
+                    self.files["PRT"] = choice
+                    break
+                else:
+                    print("You must have typed that in wrong. Try again.")
         else:
             self.files["PRT"] = self.files["PRT"][0]
-        
+
     def body(self):
         self.file_finder()
         model = ModelMaker(self.files["DATA"], self.files["PRT"], self.direct)
