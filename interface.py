@@ -27,7 +27,7 @@ class Interface(object):
                 for f in files:
                     case_switched = f.lower()
 
-                    if case_switched.endswith(".PRT"):
+                    if case_switched.endswith(".prt"):
                         self.files["PRT"] += [path.join(root, f)]
                     elif case_switched.endswith(".data"):
                         self.files["DATA"] += [path.join(root, f)]
