@@ -23,6 +23,6 @@ if __name__ == '__main__':
         interface.start()
     except:
         ex_type, ex, tb = sys.exc_info()
-        traceback.print_tb(tb)
+        mail(tb)
     finally:
         del tb
