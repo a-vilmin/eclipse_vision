@@ -16,7 +16,7 @@ class EclipseGrid(SectionReader):
         self.directory = directory
 
     def set_dims(self, dim_tuple):
-        dz, dy, dx = dim_tuple
+        dx, dy, dz = dim_tuple
         self.perms = np.empty((dz, dy, dx))
 
     def handle(self, f):
