@@ -24,5 +24,4 @@ if __name__ == '__main__':
     except:
         ex_type, ex, tb = sys.exc_info()
         mail(tb)
-    finally:
         del tb
