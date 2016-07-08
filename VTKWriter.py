@@ -47,9 +47,8 @@ class VTKWriter():
                 self.grid[term] += [tmp]
 
     def add_poro(self, eclipse):
-        try:
-            scalar = eclipse.grid.includes['PORO'][0][0][0]
-        except IndexError:
+
+        if 'PORO' not in eclipse.grid.includes:
             return
 
         tmp = vtkImageData()
