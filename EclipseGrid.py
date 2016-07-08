@@ -7,18 +7,19 @@ from SectionReader import SectionReader
 from copy import deepcopy
 from os import path
 import sys
+from collections import defaultdict
 
 
 class EclipseGrid(SectionReader):
     def __init__(self, directory):
         self.equals = {}
         self.include_file = ""
-        self.perms = np.array(1)
+        self.includes = defaultdict(lambda: np.array(1))  # place holder
         self.directory = directory
 
     def set_dims(self, dim_tuple):
         dx, dy, dz = dim_tuple
-        self.perms = np.empty((dz, dy, dx))
+        self.includes = defaultdict(lambda: np.empty((dz, dy, dx)))
 
     def handle(self, f):
         for line in f:
@@ -54,14 +55,14 @@ class EclipseGrid(SectionReader):
         for line in grid_data:
             line = line.strip().replace("'", "").split()
 
-            if not line or line[0] == '/':
+            if not line or line[0] == '/' or line[0] == 'EQUALS':
                 continue
             elif line[0] == 'COPY':
                 return True
             else:
-                val, x = line[1:3]
+                name, val, x = line[0:3]
                 y, z = (line[4], line[6])
-                self.perms[int(z)-1][int(y)-1][int(x)-1] = float(val)
+                self.includes[name][int(z)-1][int(y)-1][int(x)-1] = float(val)
         return True
 
     def _include_fail(self):

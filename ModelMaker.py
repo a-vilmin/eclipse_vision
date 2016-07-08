@@ -11,6 +11,7 @@ class ModelMaker():
     def run(self, terms):
         self.eclipse_read.file_read()
         self.vtk_write.add_perms(self.eclipse_read)
+        self.vtk_write.add_poro(self.eclipse_read)
         self.vtk_write.add_run(self.eclipse_read, terms)
         self.vtk_write.write_file()
 

@@ -46,6 +46,24 @@ class VTKWriter():
                 tmp.GetCellData().AddArray(array)
                 self.grid[term] += [tmp]
 
+    def add_poro(self, eclipse):
+        tmp = vtkImageData()
+        self._set_grid_spec(tmp, eclipse)
+
+        array = vtkFloatArray()
+        array.SetName("PORO Values")
+        array.SetNumberOfComponents(1)
+
+        x_dim, y_dim, z_dim = eclipse.dims()
+
+        for z in tqdm(range(z_dim - 1, -1, -1), "Writing Porosity Arrays"):
+            for y in range(0, y_dim):
+                for x in range(0, x_dim):
+                    scalar = eclipse.grid.includes['PORO'][z][y][x]
+                    array.InsertNextTuple1(scalar)
+        tmp.GetCellData().AddArray(array)
+        self.grid["PORO"] += [tmp]
+
     def add_perms(self, eclipse):
         tmp = vtkImageData()
         self._set_grid_spec(tmp, eclipse)
@@ -59,7 +77,7 @@ class VTKWriter():
         for z in tqdm(range(z_dim - 1, -1, -1), "Writing Perm Arrays"):
             for y in range(0, y_dim):
                 for x in range(0, x_dim):
-                    scalar = eclipse.grid.perms[z][y][x]
+                    scalar = eclipse.grid.includes['PERMX'][z][y][x]
                     array.InsertNextTuple1(scalar)
         tmp.GetCellData().AddArray(array)
         self.grid["PERMS"] += [tmp]
@@ -78,7 +96,7 @@ class VTKWriter():
             for each in tqdm(value, "Writing "+key+" vtk files"):
                 legacy = vtkXMLImageDataWriter()
                 legacy.SetFileName(path.join(dir_name, key + str(i) + '.vti'))
-                legacy.SetInputData(each)
+                legacy.SetInput(each)
                 legacy.Write()
                 i += 1
 
