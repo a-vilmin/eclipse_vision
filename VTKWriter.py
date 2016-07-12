@@ -100,7 +100,7 @@ class VTKWriter():
             for each in tqdm(value, "Writing "+key+" vtk files"):
                 legacy = vtkXMLImageDataWriter()
                 legacy.SetFileName(path.join(dir_name, key + str(i) + '.vti'))
-                legacy.SetInputData(each)
+                legacy.SetInput(each)
                 legacy.Write()
                 i += 1
 
