@@ -18,10 +18,5 @@ def mail(trace):
 
 
 if __name__ == '__main__':
-    try:
-        interface = Interface()
-        interface.start()
-    except:
-        ex_type, ex, tb = sys.exc_info()
-        mail(tb)
-        del tb
+    interface = Interface()
+    interface.start()
