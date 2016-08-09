@@ -1,3 +1,7 @@
+# Adam Vilmin
+# Illinois State Geological Survey, University of Illinois
+# 2015-05-31
+
 from PRTController import PRTController
 from vtk import vtkImageData, vtkFloatArray, vtkXMLImageDataWriter
 from collections import defaultdict
@@ -7,6 +11,8 @@ import time
 
 
 class VTKWriter():
+    """class for writing vtk files based on Eclipse outputs parsed from
+    EclipseReader objects"""
 
     def __init__(self, prt, direct):
         self.prt = PRTController(prt)
