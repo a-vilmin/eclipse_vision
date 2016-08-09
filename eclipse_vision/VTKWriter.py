@@ -12,7 +12,10 @@ import time
 
 class VTKWriter():
     """class for writing vtk files based on Eclipse outputs parsed from
-    EclipseReader objects"""
+    EclipseReader objects
+    :self.prt: PRTController object
+    :self.grid: defaultdict of lists referenced by VTKArray name
+    :self.dir: project directory string"""
 
     def __init__(self, prt, direct):
         self.prt = PRTController(prt)
