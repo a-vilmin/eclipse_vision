@@ -4,21 +4,28 @@
 
 import numpy as np
 from SectionReader import SectionReader
-from copy import deepcopy
 from os import path
 import sys
 from collections import defaultdict
 
 
 class EclipseGrid(SectionReader):
-    """Class for getting include files for PERM and PORO"""
+    """Class for handling include files for PERM and parsing include files
+    :self.equals: Dictionary for equals section (DX, DY, DZ are most used)
+    :self.include_file: string for file DATA file references
+    :self.includes: dictionary to numpy arrays parsed from include_file
+    :self.directory: string of Eclipse project directory"""
+
     def __init__(self, directory):
+        """init all variables empty except directory string (required arg)"""
+
         self.equals = {}
         self.include_file = ""
-        self.includes = defaultdict(lambda: np.array(1))  # place holder
+        self.includes = defaultdict(lambda: np.array(1))  # arr is place holder
         self.directory = directory
 
     def set_dims(self, dim_tuple):
+        """resizes self.includes numpy array arguments to dims of model"""
         dx, dy, dz = dim_tuple
         self.includes = defaultdict(lambda: np.empty((dz, dy, dx)))
 
@@ -36,6 +43,7 @@ class EclipseGrid(SectionReader):
                     self._include_fail()
 
     def _equals_handler(self, f):
+        """handles EQUALS section"""
         for line in f:
             if line.startswith("/"):
                 return
@@ -44,15 +52,19 @@ class EclipseGrid(SectionReader):
                 self.equals[line[0]] = float(line[1])
 
     def _include_handler(self):
+        """parses include file name and parses into numpy array"""
         try:
             grid_data = open(self.include_file)
             grid_data.readline()  # First line is garbage
         except:
+            # file opening error handling
+
             ex_ty, ex, tb = sys.exc_info()
             print(ex_ty+" because "+self.include_file+" cannot be " +
                   "located in directory.")
             return False
 
+        # actual parsing code
         for line in grid_data:
             line = line.strip().replace("'", "").split()
 
@@ -69,15 +81,6 @@ class EclipseGrid(SectionReader):
     def _include_fail(self):
         new_name = raw_input("Please specify location of "+self.include_file)
         self.include_file = new_name
-
-    def _copy(self, f):
-        for line in f:
-            line = line.strip().split()
-
-            if not line or line[0] == '/':
-                continue
-            else:
-                self.perms[line[1]] = deepcopy(self.perms[line[0]])
 
 if __name__ == '__main__':
     from sys import argv
