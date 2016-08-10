@@ -13,3 +13,7 @@
 2. Navigate to directory where Eclipse Vision source code is located and run```python main.py``` in terminal
 3. Eclipse project directory must contain \*.DATA file with specifications of Eclipse simulation and a \*.PRT file that contains simulation outputs
 4. Will create directory in Eclipse project directory with VTK files ready for viewing
+
+## Creating Windows EXE file
+1. Install all required packages (including py2exe) and navigate to project directory
+2. Run ```python setup.py py2exe``` Documentation for Py2Exe is [here](http://www.py2exe.org/index.cgi/Tutorial) for more help.
