@@ -1,3 +1,7 @@
+# Adam Vilmin
+# Illinois State Geological Survey, University of Illinois
+# 2015-05-31
+
 from __future__ import print_function
 from PRTEntry import PRTEntry
 from collections import defaultdict
@@ -6,13 +10,24 @@ import sys
 
 
 class PRTController(object):
+    """class for parsing PRT file output from Eclipse/Petrel
+    :self.prt_file: PRT file string
+    :self.runs: defaultdict of lists containing the VTK grids for each
+                timestep, referrenced by search term/poro/perms
+    :self.f_len: len of PRT file. Used to get better count for progress bar.
+    :self.x, y, z: dimensions of simulation grid"""
 
     def __init__(self, prt):
+        """initializes all variables and runs self._get_len. requires prt string
+        as arg"""
+
         self.prt_file = prt
         self.runs = defaultdict(list)
         self.f_len = self._get_len(prt)
 
     def _get_len(self, fname):
+        """gets number of lines in prt. prints periods to show progress."""
+
         with open(fname) as f:
             sys.stdout.write('Opening files...')
             sys.stdout.flush()
@@ -28,7 +43,7 @@ class PRTController(object):
         self.x, self.y, self.z = dim_tup
 
     def add_runs(self, terms):
-        '''searches for term and creates PRTEntry for all data in term'''
+        """searches for term and creates PRTEntry for all data in term"""
         opened = open(self.prt_file)
 
         with tqdm(total=self.f_len) as pbar:
@@ -53,6 +68,7 @@ class PRTController(object):
                 return
 
     def _det_term(self, line, terms):
+        """determines term that section is referring to"""
         for each in terms:
             if line.strip().startswith(each):
                 return each

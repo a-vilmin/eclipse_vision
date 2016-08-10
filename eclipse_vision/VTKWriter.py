@@ -12,33 +12,48 @@ import time
 
 class VTKWriter():
     """class for writing vtk files based on Eclipse outputs parsed from
-    EclipseReader objects
+    EclipseReader and PRTController objects
     :self.prt: PRTController object
     :self.grid: defaultdict of lists referenced by VTKArray name
     :self.dir: project directory string"""
 
     def __init__(self, prt, direct):
+        """initializes self variables and requires PRT name string
+        and directory string"""
+
         self.prt = PRTController(prt)
         self.grid = defaultdict(list)
         self.dir = direct
 
     def _set_grid_spec(self, vtk, eclipse):
-        """expect eclipse file reader object. refer to readme for specs"""
+        """Uses EclipseReader object to set params for the VTK file. Takes
+        vtkImageData object and EclipseReader as args"""
+
         vtk.SetOrigin(0, 0, 0)
+
         dx, dy, dz = eclipse.spacing()
         vtk.SetSpacing(dx, dy, dz)
 
         x_dim, y_dim, z_dim = eclipse.dims()
         vtk.SetDimensions(int(x_dim)+1, int(y_dim)+1, int(z_dim)+1)
 
-    def add_run(self, eclipse, search_terms):
+    def add_runs(self, eclipse, search_terms):
+        """Uses self.prt to search PRT file using list of search terms then creates
+        vtkFloatArrays for the scalar values"""
+
         self.prt.set_dims(eclipse.dims())
+
+        # actual PRT file parsing
         self.prt.add_runs(search_terms)
 
         x_dim, y_dim, z_dim = eclipse.dims()
-        # run is PRTEntry object
+
+        # self.prt.runs is dictionary referencing lists of PRTEntry objects
         for term, runs in self.prt.runs.iteritems():
+            # run is PRTEntry object
             for run in tqdm(runs, "creating "+term+"'s vtk arrays"):
+
+                # writing individual time steps requires seperate VTK grids
                 tmp = vtkImageData()
                 self._set_grid_spec(tmp, eclipse)
 
@@ -56,6 +71,7 @@ class VTKWriter():
                 self.grid[term] += [tmp]
 
     def add_poro(self, eclipse):
+        """creates porocity VTK file if Poro is flagged by EclipseReader"""
 
         if 'PORO' not in eclipse.grid.includes:
             return
@@ -78,6 +94,7 @@ class VTKWriter():
         self.grid["PORO"] += [tmp]
 
     def add_perms(self, eclipse):
+        """creates Permiability VTK file"""
         tmp = vtkImageData()
         self._set_grid_spec(tmp, eclipse)
 
@@ -96,7 +113,11 @@ class VTKWriter():
         self.grid["PERMS"] += [tmp]
 
     def write_file(self):
+        """Writes all VTK grids in self.grid to VTI files"""
+
         for key, value in self.grid.iteritems():
+            # creates directory for each term in Eclipse project directory
+            # root for all VTI files is dated by parser runtime date
             dir_name = path.join(self.dir, time.strftime("%d_%m_%Y"))
             dir_name = path.join(dir_name, key)
 
@@ -122,6 +143,6 @@ if __name__ == '__main__':
 
     test_ER.file_read()
     test_VTK.set_grid_spec(test_ER)
-    test_VTK.add_run(test_ER)
+    test_VTK.add_runs(test_ER)
 
     test_VTK.write_file("test")
