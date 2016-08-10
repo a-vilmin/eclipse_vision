@@ -2,9 +2,16 @@
 # Illinois State Geological Survey, University of Illinois
 # 2015-05-31
 from SectionReader import SectionReader
+# Adam Vilmin
+# Illinois State Geological Survey, University of Illinois
+# 2015-05-31
 
 
 class RunSpec(SectionReader):
+    """Class for parsing RUNSPEC sections of DATA files from Eclipse output
+    :self.title: Title of entire simulation
+    :self.x_dim, y_dim, z_dim: 3D dimensions of simulation grid"""
+
     def __init__(self):
         self.title = ""
         self.x_dim = 0
@@ -12,6 +19,7 @@ class RunSpec(SectionReader):
         self.z_dim = 0
 
     def _convert(self, x, y, z):
+        """assigns int values to self.dim values from strings"""
         self.x_dim = int(x)
         self.y_dim = int(y)
         self.z_dim = int(z)

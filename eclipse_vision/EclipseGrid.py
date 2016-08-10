@@ -11,6 +11,7 @@ from collections import defaultdict
 
 
 class EclipseGrid(SectionReader):
+    """Class for getting include files for PERM and PORO"""
     def __init__(self, directory):
         self.equals = {}
         self.include_file = ""
@@ -58,7 +59,7 @@ class EclipseGrid(SectionReader):
             if not line or line[0] == '/' or line[0] == 'EQUALS':
                 continue
             elif line[0] == 'COPY':
-                return True
+                break
             else:
                 name, val, x = line[0:3]
                 y, z = (line[4], line[6])

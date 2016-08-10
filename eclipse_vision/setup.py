@@ -1,3 +1,7 @@
+# Adam Vilmin
+# Illinois State Geological Survey, University of Illinois
+# 2015-05-31
+
 from distutils.core import setup
 import py2exe
 

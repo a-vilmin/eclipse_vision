@@ -21,7 +21,7 @@ class Interface(object):
         self.files = defaultdict(list)
         self.direct = ''
 
-    def body(self):
+    def run(self):
         """main function for running interface. runs directory trace, retrieves
         search terms, and handling for ModelMaker object"""
 
