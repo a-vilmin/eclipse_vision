@@ -1,17 +1,30 @@
+# Adam Vilmin
+# Illinois State Geological Survey, University of Illinois
+# 2015-05-31
+
 import numpy as np
 
 
 class PRTEntry():
+    """Class for holding array of cell data parsed out of PRT file at
+    individual timesteps
+    :self.cells: Numpy array sized to dimensions of Eclipse simulation
+    :self.time: Timestep for simulation
+    :self.name: Name of simulation"""
 
-    # class methods
     def __init__(self, dx, dy, dz):
-        '''cells initialized in order: z, y, x'''
+        """cells initialized in order: z, y, x and are required args"""
+
         self.cells = np.empty((dz, dy, dx))
         self.time = 0.0
         self.name = ''
 
     def read_type_info(self, line):
+        """parses timestep and name info from line in PRT"""
         break_up = line.strip().split()
+
+        # title of simulation proceeds timestep. code finds all parts of
+        # title and parses the timestep out.
         try:
             for each in break_up[1:]:
                 try:
@@ -26,7 +39,9 @@ class PRTEntry():
                   "format not recognized!")
 
     def read_cell_info(self, f, pbar):
-        curr_x = []
+        """reads cells from PRT into np array. requires progress bar as arg"""
+        curr_x = []  # PRT has X value defined at top of collumns
+
         for line in f:
             pbar.update(1)
             if line.startswith(" (I,  J,  K)"):
@@ -49,7 +64,7 @@ class PRTEntry():
             self.cells[z-1][y-1][x-1] = n
 
     def _reset_i(self, line):
-        '''for getting new x values when collumns change'''
+        """for getting new x values when collumns change"""
         chopped = line.strip().split()
         ret_val = []
 

@@ -51,13 +51,13 @@ class PRTController(object):
             for line in opened:
                 if line.strip().startswith(terms):
                     term = self._det_term(line, terms)
-                    temp = PRTEntry(self.x, self.y, self.z)
-                    temp.read_type_info(line)
+                    entry = PRTEntry(self.x, self.y, self.z)
+                    entry.read_type_info(line)
 
                     self._skip_lines(opened, term, pbar)
-                    temp.read_cell_info(opened, pbar)
+                    entry.read_cell_info(opened, pbar)
 
-                    self.runs[term] += [temp]
+                    self.runs[term] += [entry]
                 pbar.update(1)
         opened.close()
 
