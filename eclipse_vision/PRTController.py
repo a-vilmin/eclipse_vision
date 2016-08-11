@@ -73,9 +73,20 @@ class PRTController(object):
             if line.strip().startswith(each):
                 return each
 
+    def write_timesteps(self, txt_file):
+        for term, runs in self.runs.iteritems():
+            txt_file.write("The sequence for " + term + '\n')
+            for run in runs:
+                txt_file.write(str(run.time) + "  ")
+            txt_file.write('\n')
+
 if __name__ == '__main__':
     from sys import argv
 
     test = PRTController(argv[1])
-    test.add_runs()
-    print(str(test.runs))
+    test.set_dims((100, 100, 100))
+    test.add_runs(("SGAS", "PRESSURE"))
+
+    txt = open("timesteps.txt", 'w')
+
+    test.write_timesteps(txt)
